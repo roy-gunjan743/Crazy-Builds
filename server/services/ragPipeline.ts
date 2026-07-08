@@ -168,7 +168,7 @@ async function callGrokAPI(prompt: string, grokApiKey: string): Promise<string> 
       'Authorization': `Bearer ${grokApiKey}`
     },
     body: JSON.stringify({
-      model: 'grok-2',
+      model: 'grok-latest',
       messages: [
         { role: 'user', content: prompt }
       ],

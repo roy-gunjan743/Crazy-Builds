@@ -265,7 +265,7 @@ export default function App() {
                   value={tempGrokApiKey}
                   onChange={(e) => setTempGrokApiKey(e.target.value)}
                 />
-                <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Required to utilize Grok model router (`grok-2`).</span>
+                <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Required to utilize Grok model router (`grok-latest`).</span>
               </div>
 
               <div className="form-group">
