@@ -35,6 +35,25 @@ Rather than mapping dataset schemas using keyword string checks (e.g. `col.name.
 
 ---
 
+## ⚠️ Challenges & Solutions
+
+During development, we navigated several core integration hurdles and adapted our design patterns accordingly:
+
+1. **Deprecated LLM Identifiers (`Model Not Found: grok-2`)**
+   - *Challenge*: The xAI API returned `400 Bad Request` because the model identifier `grok-2` had been deprecated from their gateway.
+   - *Solution*: Programmatically queried the xAI models registry to identify valid endpoints and updated the pipeline to use the stable alias `grok-latest` (routing dynamically to `grok-4.3`), ensuring future-proof API connectivity.
+2. **Native Compilation Errors on TensorFlow.js (`tfjs-node`)**
+   - *Challenge*: Attempting to install the native TensorFlow node bindings failed because the host environment lacked the compatible python/C++ compiler toolchain required for native build steps.
+   - *Solution*: Rejected external frameworks entirely and implemented a **Pure TypeScript Dense Autoencoder** from scratch. Natively scripting feedforward layers, backpropagation, and SGD/Adam updates in pure JS loop blocks bypasses native compilation errors while maintaining robust multivariate anomaly detection.
+3. **Session Persistence Overkill**
+   - *Challenge*: The web app cached the active database state, causing it to auto-reload the last uploaded dataset on tab refresh or new session launches when a clean workspace was expected.
+   - *Solution*: Disabled the automatic REST API restore hooks in `App.tsx` on mount, forcing the client state to default to a clean Ingestion dashboard on launch.
+4. **Credential Leakage in Git History (GitHub Push Protection)**
+   - *Challenge*: Committing the `.env` secret file locally blocked pushes to origin due to GitHub's push protection flagging raw API keys.
+   - *Solution*: Removed local database files and caches from Git tracking, added database files to `.gitignore`, rewrote the local git history as a clean orphan branch with a single initial commit containing no secrets, and successfully pushed the clean history.
+
+---
+
 ## 🛠️ Technology Stack
 
 *   **Frontend**: React (Vite), TypeScript, Lucide Icons, Recharts (Responsive layout)
