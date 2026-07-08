@@ -1,0 +1,47 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Dataset {
+  id         String     @id @default(uuid())
+  fileName   String
+  rowCount   Int
+  uploadedAt DateTime   @default(now())
+  rows       DataRow[]
+  anomalies  Anomaly[]
+}
+
+model DataRow {
+  id        String   @id @default(uuid())
+  datasetId String
+  dataset   Dataset  @relation(fields: [datasetId], references: [id], onDelete: Cascade)
+  rowIndex  Int
+  dataJson  String
+}
+
+model Anomaly {
+  id         String   @id @default(uuid())
+  datasetId  String
+  dataset    Dataset  @relation(fields: [datasetId], references: [id], onDelete: Cascade)
+  columnName String
+  rowIndex   Int
+  value      Float
+  mean       Float
+  stdDev     Float
+  zScore     Float
+  details    String
+}
+
+model ChatHistory {
+  id         String   @id @default(uuid())
+  sender     String   // "user" | "ai"
+  text       String
+  timestamp  DateTime @default(now())
+  stepsJson  String?  // JSON representation of QueryStep[]
+  chartJson  String?  // JSON representation of chartConfig
+}
