@@ -14,6 +14,27 @@
 
 ---
 
+## 💡 Our Approach
+
+We reject the common, fragile design patterns of general-purpose AI interfaces (like simple keyword searching or text-only arithmetic synthesis) and instead construct our system upon four core architectural pillars:
+
+### 1. Zero-Leak PII Security (Shield First)
+Instead of relying on remote filters or compliance promises, we implement a **local PII Security Shield** directly in the backend. When a dataset is uploaded, it undergoes a regex-based scan for sensitive attributes (emails, phone numbers, customer names). Any detected PII is tokenized (`EMAIL_XXXXX`) and stored exclusively in server heap memory. The original mapping table never writes to disk. Original values are restored (`unmaskText()`) server-side right before presenting responses to authorized UI clients.
+
+### 2. Sandbox Code Aggregation (Hybrid RAG)
+Traditional RAG models struggle with numeric metrics and hallucinations. Our approach separates text retrieval from computation:
+- **Retrieval**: Fetches relevant semantic rows (via vector search or local similarity models).
+- **Execution**: The LLM acts as an **Agentic Code Generator**, compiling a read-only JavaScript aggregation function. This function runs on the server inside a secure, isolated `vm` sandbox context, processing the complete dataset.
+- **Synthesis**: The exact computational output from the sandbox is fed back to the LLM to write the final executive summary. This guarantees **100% mathematical correctness**.
+
+### 3. Lightweight Neural Architectures
+To perform multivariate anomaly detection without dragging in heavy Python dependencies or native C-bindings (like TensorFlow native libraries), we built a **Pure TypeScript Dense Autoencoder** from scratch. By implementing feedforward layers, ReLU/Sigmoid activations, backpropagation, and the Adam Optimizer natively, we train a custom bottleneck model directly in the Node.js runtime process. Anomaly scores are derived from multi-dimensional reconstruction errors, enabling the system to discover correlations and anomalies that simple Z-score limits miss.
+
+### 4. Schematic Profiling
+Rather than mapping dataset schemas using keyword string checks (e.g. `col.name.includes("sales")`), we analyze the **data's shape and characteristics**. The schematic profiler evaluates integer ratios, date formats, null distributions, cardinality, and mean magnitudes. This allows Talking Rabbitt to build dashboard charts correctly regardless of header languages or naming conventions (e.g. column names like `X1` or `col_0` are parsed correctly).
+
+---
+
 ## 🛠️ Technology Stack
 
 *   **Frontend**: React (Vite), TypeScript, Lucide Icons, Recharts (Responsive layout)
